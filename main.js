@@ -19,7 +19,7 @@ async function writeData() {
     console.log("data loading")
 
 
-    for (let i = 10 * currentPage; i <= 10 * currentPage + 10; i++) {
+    for (let i = 20 * currentPage; i <= 20 * currentPage + 20; i++) {
 
         if (i > data.size) break
 
@@ -52,7 +52,7 @@ window.addEventListener('scroll', () => {
     ) {
         console.log("End Page")
         if (!loading)
-            if (10 * currentPage > size) console.log("All data printed")
+            if (20 * currentPage > size) console.log("All data printed")
             writeData()
     }
 });
