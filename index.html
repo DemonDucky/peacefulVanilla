@@ -6,34 +6,59 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/clusterize.js/0.19.0/clusterize.css" rel="stylesheet">
     <link rel="stylesheet" href="./main.css">
+
+
 </head>
 <body>
 
-<table class="data_table">
-    <tr>
-        <th>Shop Name</th>
-        <th>Shop Owner</th>
-        <th>Location</th>
-        <th>World</th>
-        <th>Item</th>
-        <th>Price A</th>
-        <th>Price B</th>
-        <th>Stock</th>
-    </tr>
-    <tr>
-        <td>Alfreds Futterkiste</td>
-        <td>Maria Anders</td>
-        <td>Germany</td>
-    </tr>
-    <tr>
-        <td>Centro comercial Moctezuma</td>
-        <td>Francisco Chang</td>
-        <td>Mexico</td>
-    </tr>
-</table>
+<div class="clusterize">
+<!--    <table class="table">-->
+
+<!--        &lt;!&ndash; Visual headers &ndash;&gt;-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <td>Col1</td>-->
+<!--            <td>Col2</td>-->
+<!--            <td>Col3</td>-->
+<!--            <td>Col4</td>-->
+<!--            <td>Col5</td>-->
+<!--            <td>Col6</td>-->
+<!--            <td>Col7</td>-->
+<!--            <td>Col8</td>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--    </table>-->
+    <div id="scrollArea" class="clusterize-scroll">
+        <table class="table">
+
+            <!-- Hidden helper headers to keep columns width (specified by css), td's must be empty -->
+            <thead>
+            <tr>
+                <td>Col1</td>
+                <td>Col2</td>
+                <td>Col3</td>
+                <td>Col4</td>
+                <td>Col5</td>
+                <td>Col6</td>
+                <td>Col7</td>
+                <td>Col8</td>
+            </tr>
+            </thead>
+            <tbody id="contentArea" class="clusterize-content">
+            <tr class="clusterize-no-data">
+
+                <!-- Note colspan which forces single td to fill whole table width -->
+                <td colspan="100">Loading data…</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clusterize.js/0.19.0/clusterize.min.js"></script>
 <script src="./main.js"></script>
 </body>
 </html>

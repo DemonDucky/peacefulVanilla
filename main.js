@@ -6,53 +6,39 @@ async function test() {
     return data
 }
 
-let currentPage = 0
-let loading = false
-let size = 0
-
-const table = document.querySelector(".data_table")
-
+function hello(data) {
+    console.log(data)
+}
 async function writeData() {
 
-    loading = true
     const data = await test()
-    console.log("data loading")
+    const result = []
 
-
-    for (let i = 20 * currentPage; i <= 20 * currentPage + 20; i++) {
-
-        if (i > data.size) break
-
-        const shopkeeper = data[i]
+    for (let shopkeeper of data) {
 
         for (let recipe of shopkeeper.recipes) {
-            table.innerHTML += `    
+            const {shopName, shopOwner, location, world} = shopkeeper
+            const {resultItem, item1, item2, stock} = recipe
+            result.push(`
     <tr>
-        <td>${shopkeeper.shopName}</td>
-        <td>${shopkeeper.shopOwner}</td>
-        <td>${shopkeeper.location}</td>
-        <td>${shopkeeper.world}</td>
-        <td>${recipe.resultItem.type}</td>
-        <td>${recipe.item1.type}</td>
-        <td>${recipe.item2.type}</td>
-    </tr>`
+        <td>${shopName}</td>
+        <td>${shopOwner}</td>
+        <td>${location}</td>
+        <td>${world}</td>
+        <td onmouseover="hello('${resultItem.type}')">${resultItem.type}</td>
+        <td>${item1.type}</td>
+        <td>${item2.type}</td>
+        <td>${stock}</td>
+    </tr>`)
         }
     }
 
-    currentPage++
-    console.log("data loaded")
-    loading = false
+    Clusterize({
+        rows: result,
+        scrollId: 'scrollArea',
+        contentId: 'contentArea'
+    });
+
 }
 
 writeData()
-
-window.addEventListener('scroll', () => {
-    if (
-        window.scrollY + window.innerHeight >= document.body.offsetHeight - (window.innerHeight / 2)
-    ) {
-        console.log("End Page")
-        if (!loading)
-            if (20 * currentPage > size) console.log("All data printed")
-            writeData()
-    }
-});

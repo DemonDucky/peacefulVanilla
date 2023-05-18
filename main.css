@@ -1,0 +1,19 @@
+* {
+    box-sizing: border-box;
+}
+
+
+.clusterize-scroll {
+    max-height: 100vh;
+}
+
+/* CSS */
+
+/* Set appropriate styles for table */
+.table {
+    table-layout: fixed;
+    width: 100vw;
+}
+
+/* It's important to set equal width for both thead's (visual and helper) */
+.clusterize thead td {width: calc(100vw / 8)}
