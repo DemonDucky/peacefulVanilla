@@ -14,14 +14,16 @@
 <body>
 
 <div class="clusterize">
+
+
+    <div>
+        <label for="search">Search:</label>
+        <input id="search" type="text" placeholder="Enter your search query..."/>
+    </div>
+
     <div id="scrollArea" class="clusterize-scroll">
-        <div>
-            <label for="search">Search:</label>
-            <input id="search" type="text" placeholder="Value"/>
-        </div>
         <table class="table">
 
-            <!-- Hidden helper headers to keep columns width (specified by css), td's must be empty -->
             <thead>
             <tr>
                 <td>Shop name</td>
@@ -37,7 +39,6 @@
             <tbody id="contentArea" class="clusterize-content">
             <tr class="clusterize-no-data">
 
-                <!-- Note colspan which forces single td to fill whole table width -->
                 <td colspan="100">Loading data…</td>
             </tr>
             </tbody>
