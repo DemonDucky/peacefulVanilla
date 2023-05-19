@@ -14,36 +14,24 @@
 <body>
 
 <div class="clusterize">
-<!--    <table class="table">-->
-
-<!--        &lt;!&ndash; Visual headers &ndash;&gt;-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <td>Col1</td>-->
-<!--            <td>Col2</td>-->
-<!--            <td>Col3</td>-->
-<!--            <td>Col4</td>-->
-<!--            <td>Col5</td>-->
-<!--            <td>Col6</td>-->
-<!--            <td>Col7</td>-->
-<!--            <td>Col8</td>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--    </table>-->
     <div id="scrollArea" class="clusterize-scroll">
+        <div>
+            <label for="search">Search:</label>
+            <input id="search" type="text" placeholder="Value"/>
+        </div>
         <table class="table">
 
             <!-- Hidden helper headers to keep columns width (specified by css), td's must be empty -->
             <thead>
             <tr>
-                <td>Col1</td>
-                <td>Col2</td>
-                <td>Col3</td>
-                <td>Col4</td>
-                <td>Col5</td>
-                <td>Col6</td>
-                <td>Col7</td>
-                <td>Col8</td>
+                <td>Shop name</td>
+                <td>Shop owner</td>
+                <td>Location</td>
+                <td>World</td>
+                <td>Item</td>
+                <td>Price A</td>
+                <td>Price B</td>
+                <td>Stock</td>
             </tr>
             </thead>
             <tbody id="contentArea" class="clusterize-content">
