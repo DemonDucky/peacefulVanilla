@@ -29,6 +29,36 @@ async function writeData() {
 
     addEvent(flattenedData, clusterize)
     sortEvent()
+
+
+    document.getElementById('contentArea').onmouseover = function (e) {
+        const target = e.target
+        if (target.nodeName !== 'TD' || target.dataset.hoverable !== "true") return
+        const name = target.dataset.name
+        const lore = target.dataset.lore
+        const enchants = target.dataset.enchants
+        if (name === "" && lore === "" && enchants === "") return
+        textBox.innerHTML = ""
+        textBox.style.display = "block"
+        textBox.innerHTML = `Name: ${name}<br><br>Lore:<br>${lore}<br><br>Enchants:<br>${enchants}`
+    }
+
+    document.getElementById("contentArea").onmouseout = function (e) {
+        const target = e.target
+        if (target.nodeName !== 'TD' || target.dataset.hoverable !== "true") return
+
+
+        textBox.style.display = "none"
+    }
+
+    document.getElementById("contentArea").onmousemove = function(e) {
+        const target = e.target
+        if (target.nodeName !== 'TD' || target.dataset.hoverable !== "true") return
+        const mouseX = e.pageX + 10;
+        const mouseY = e.pageY + 10;
+        textBox.style.left = mouseX + 'px';
+        textBox.style.top = mouseY + 'px';
+    }
 }
 
 function flattenData(shopkeepers) {
@@ -73,25 +103,46 @@ function convertData(tradings) {
             .replace("%{y}", locationSplited[1])
             .replace("%{z}", locationSplited[2])
 
+        const resultItemMeta = getMetaData(resultItem)
+        const item1Meta = getMetaData(item1)
+        const item2Meta = getMetaData(item2)
 
-        //     <td>${resultItem.name || `${resultItem.amount}x ${resultItem.type.replaceAll("_", " ")}`}</td>
-        // <td>${item1.name || `${item1.amount}x ${item1.type.replaceAll("_", " ")}`}</td>
-        // <td>${item2 ? item2.name || `${item2.amount}x ${item2.type.replaceAll("_", " ")}` : ""}</td>
+
         result.push(`
     <tr>
         <td>${shopName}</td>
         <td>${shopOwner}</td>
         <td><a href="${link}">${location}</a></td>
         <td>${world}</td>
-        <td>${resultItem.type.replaceAll("_", " ")}</td>
-        <td>${item1.type.replaceAll("_", " ")}</td>
-        <td>${item2 ? item2.type.replaceAll("_", " ") : ""}</td>
+        <td data-hoverable="true" data-enchants="${resultItemMeta.enchant}" data-lore="${resultItemMeta.lore}" data-name="${resultItem.name}">${resultItem.amount}x ${resultItem.type.replaceAll("_", " ")}</td>
+        <td data-hoverable="true" data-enchants="${item1Meta.enchant}" data-lore="${item1Meta.lore}" data-name="${item1.name}">${resultItem.amount}x ${item1.type.replaceAll("_", " ")}</td>
+        <td data-hoverable="true" data-enchants="${item2Meta.enchant}" data-lore="${item2Meta.lore}" data-name="${item2 ? item2.name : ""}">${item2 ? `${resultItem.amount}x ${item2.type.replaceAll("_", " ")}` : ""}</td>
         <td>${stock}</td>
     </tr>`)
     })
 
     return result
 }
+
+function getMetaData(item) {
+
+    if (item === undefined) return {lore: "", enchant: ""}
+
+    const resultItemLore = item.lore ? item.lore.join("<br>").replace(/§./g, "") : ""
+    const itemEnchant = []
+
+    if (Object.keys(item.enchant).length !== 0) {
+        for (const [key, value] of Object.entries(item.enchant)) {
+            itemEnchant.push(`- ${key.replaceAll("minecraft:", "").replace("_", " ")}: ${value}`)
+        }
+    }
+
+    return {
+        lore: resultItemLore,
+        enchant: itemEnchant.join("<br>")
+    }
+}
+
 
 function addEvent() {
     searchValue.addEventListener("input", () => {
@@ -209,13 +260,13 @@ function sortTable(sortByColumn, desc) {
             let [curLocX, curLocY, curLocZ] = curLoc
             let [nextLocX, nextLocY, nextLocZ] = nextLoc
 
-            curLocX = curLocX*1
-            curLocY = curLocY*1
-            curLocZ = curLocZ*1
+            curLocX = curLocX * 1
+            curLocY = curLocY * 1
+            curLocZ = curLocZ * 1
 
-            nextLocX = nextLocX*1
-            nextLocY = nextLocY*1
-            nextLocZ = nextLocZ*1
+            nextLocX = nextLocX * 1
+            nextLocY = nextLocY * 1
+            nextLocZ = nextLocZ * 1
 
             if (curLocX !== nextLocX) {
                 return sortNumber(curLocX, nextLocX, desc)

@@ -36,6 +36,7 @@
     position: absolute;
     display: none;
     background: black;
+    color: white;
     padding: 8px;
 }
 
