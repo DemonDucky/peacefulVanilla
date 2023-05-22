@@ -20,26 +20,43 @@
         <label for="search">Search:</label>
         <input id="search" type="text" placeholder="Enter your search query..."/>
     </div>
+    <div id="search_filter">
+        <input type="radio" id="shop_name" name="search_filter" value="shopName" checked>
+        <label for="shop_name">Shop Name</label>
+        <input type="radio" id="shop_owner" name="search_filter" value="shopOwner">
+        <label for="shop_owner">Shop Owner</label>
+        <input type="radio" id="world" name="search_filter" value="world">
+        <label for="world">World</label>
+        <input type="radio" id="result_item" name="search_filter" value="resultItem">
+        <label for="result_item">Result Item</label>
+    </div>
+    <div id="timeDumped"></div>
 
     <div id="scrollArea" class="clusterize-scroll">
         <table class="table">
 
             <thead>
             <tr>
-                <td>Shop name</td>
-                <td>Shop owner</td>
-                <td>Location</td>
-                <td>World</td>
-                <td>Item</td>
-                <td>Price A</td>
-                <td>Price B</td>
-                <td>Stock</td>
+                <td data-value="shopName">Shop name</td>
+                <td data-value="shopOwner">Shop owner</td>
+                <td data-value="location">Location</td>
+                <td data-value="world">World</td>
+                <td data-value="resultItem">Item</td>
+                <td data-value="item1">Price A</td>
+                <td data-value="item2">Price B</td>
+                <td data-value="stock">Stock</td>
             </tr>
             </thead>
             <tbody id="contentArea" class="clusterize-content">
             <tr class="clusterize-no-data">
-
-                <td colspan="100">Loading data…</td>
+                <td>Loading data…</td>
+                <td>Loading data…</td>
+                <td>Loading data…</td>
+                <td>Loading data…</td>
+                <td>Loading data…</td>
+                <td>Loading data…</td>
+                <td>Loading data…</td>
+                <td>Loading data…</td>
             </tr>
             </tbody>
         </table>
@@ -48,6 +65,7 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clusterize.js/0.19.0/clusterize.min.js"></script>
+<script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
 <script src="./main.js"></script>
 </body>
 </html>

@@ -1,68 +1,242 @@
 const searchValue = document.querySelector("#search")
-
+const headers = document.querySelectorAll(".clusterize thead td")
+const arrowDown = "<i id=\"down\" class=\"arrow\"><box-icon size='xs' type='solid' name='down-arrow'></box-icon></i>"
+const arrowUp = "<i id=\"up\" class=\"arrow\"><box-icon size='xs' type='solid' name='up-arrow'></box-icon></i>"
+let rawLink = ""
+let clusterize = null
+let flattenedData = []
+let dataDisplaying = []
 
 async function getData() {
-    const raw = await fetch("./data.json")
-    const data = await raw.json()
-    size = data.size
 
-    return data
+    const raw = await fetch("./data.json")
+
+    return await raw.json()
 }
 
 async function writeData() {
 
     const data = await getData()
-    const result = []
+    flattenedData = flattenData(data.data)
+    dataDisplaying = [...flattenedData]
 
-    for (let shopkeeper of data) {
-        result.push(convertData(shopkeeper))
-    }
+    rawLink = data.information.link
 
-    const clusterize = Clusterize({
-        rows: result,
-        scrollId: 'scrollArea',
-        contentId: 'contentArea'
+    clusterize = Clusterize({
+        rows: convertData(dataDisplaying), scrollId: 'scrollArea', contentId: 'contentArea'
     });
 
+    addEvent(flattenedData, clusterize)
+    sortEvent()
+}
 
-    searchValue.addEventListener("input", () => {
+function flattenData(shopkeepers) {
 
-        const dataFiltered = filterData(data, searchValue.value)
-        const lastData = []
-        for (shopkeeper of dataFiltered) {
-            lastData.push(convertData(shopkeeper))
-        }
-        if (lastData.length === 0) lastData.push(`<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`)
-        clusterize.update(lastData)
+    const result = []
+
+    // Loop through all shopkeeper
+    shopkeepers.forEach(shopkeeper => {
+
+        // Loop through all trade
+        shopkeeper.recipes.forEach(trade => {
+
+            result.push({
+                shopName: shopkeeper.shopName,
+                shopOwner: shopkeeper.shopOwner,
+                location: shopkeeper.location,
+                world: shopkeeper.world,
+                resultItem: trade.resultItem,
+                item1: trade.item1,
+                item2: trade.item2,
+                stock: trade.stock
+            })
+
+        })
     })
 
+    return result
 }
 
-function filterData(data, filter) {
+function convertData(tradings) {
 
-    if (data === "") return data
+    const result = []
 
-    return data.filter(shopkeeper => shopkeeper.shopName.toLowerCase().includes(filter.toLowerCase())
-    )
-}
-
-function convertData(shopkeeper) {
-    for (let recipe of shopkeeper.recipes) {
-        const {shopName, shopOwner, location, world} = shopkeeper
+    tradings.forEach(trading => {
+        const {shopName, shopOwner, location, world, resultItem, item1, item2, stock} = trading
         const locationSplited = location.split(", ")
-        const {resultItem, item1, item2, stock} = recipe
-        return (`
+
+        const link = rawLink
+            .replace("%{world}", world.toLowerCase())
+            .replace("%{x}", locationSplited[0])
+            .replace("%{y}", locationSplited[1])
+            .replace("%{z}", locationSplited[2])
+
+        result.push(`
     <tr>
         <td>${shopName}</td>
         <td>${shopOwner}</td>
-        <td><a href="https://peacefulvanilla.club/mapping-test/#${world};flat;${locationSplited[0]},${locationSplited[1]},${locationSplited[2]};5" target="_blank">${location}</a></td>
+        <td><a href="${link}">${location}</a></td>
         <td>${world}</td>
         <td>${resultItem.name || `${resultItem.amount}x ${resultItem.type.replaceAll("_", " ")}`}</td>
         <td>${item1.name || `${item1.amount}x ${item1.type.replaceAll("_", " ")}`}</td>
         <td>${item2 ? item2.name || `${item2.amount}x ${item2.type.replaceAll("_", " ")}` : ""}</td>
         <td>${stock}</td>
     </tr>`)
+    })
+
+    return result
+}
+
+function addEvent() {
+    searchValue.addEventListener("input", () => {
+
+        const dataFiltered = filterData()
+        const result = convertData(dataFiltered)
+        if (result.length === 0) result.push(`<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`)
+
+        dataDisplaying = dataFiltered
+        clusterize.update(result)
+    })
+}
+
+function filterData() {
+
+    const value = searchValue.value
+
+    if (value === "") {
+        return flattenedData
+    }
+
+    const searchFilter = document.querySelector('#search_filter input:checked')
+
+
+    return flattenedData.filter(trading => {
+        if (searchFilter.value !== "resultItem" && trading[searchFilter.value].toLowerCase().includes(value.toLowerCase())) {
+            return true
+        } else if (searchFilter.value === "resultItem") {
+
+            if (trading.resultItem[typeOrName(trading.resultItem)].toLowerCase().includes(value.toString())) return true
+        }
+    })
+
+}
+
+function typeOrName(item) {
+
+    if (!item) return null
+
+    let typeOrName = "type"
+    if (item.name !== "") typeOrName = "name"
+
+    return typeOrName
+}
+
+function sortEvent() {
+    headers.forEach(header => {
+        header.addEventListener('click', () => addIcon(header))
+    })
+}
+
+function addIcon(header) {
+
+    headers.forEach(headerAgain => {
+        const arrow = headerAgain.querySelector(".arrow")
+        if (arrow && (headerAgain !== header)) {
+            headerAgain.removeChild(arrow)
+        }
+    })
+
+    const getArrow = header.querySelector(".arrow")
+    if (getArrow) {
+        switch (getArrow.id) {
+            case "down":
+                header.removeChild(getArrow)
+                header.innerHTML += arrowUp
+                sortTable(header.dataset.value, true)
+                break
+            case "up":
+                header.removeChild(getArrow)
+                header.innerHTML += arrowDown
+                sortTable(header.dataset.value, false)
+        }
+    } else {
+        header.innerHTML += arrowDown
+        sortTable(header.dataset.value, false)
     }
 }
 
-writeData()
+function sortTable(sortByColumn, desc) {
+
+    const allData = [flattenedData, dataDisplaying]
+
+    if (sortByColumn === "shopOwner" || sortByColumn === "shopName" || sortByColumn === "world") {
+
+        allData.forEach(data => data.sort((a, b) => sortString(a[sortByColumn], b[sortByColumn], desc)))
+
+    } else if (sortByColumn === "resultItem" || sortByColumn === "item1" || sortByColumn === "item2") {
+
+        allData.forEach(data => {
+            data.sort((a, b) => {
+                const curItem = a[sortByColumn]
+                const nextItem = b[sortByColumn]
+
+                switch (true) {
+                    case (curItem === undefined && nextItem === undefined):
+                        return desc ? 1 : -1
+                    case (curItem !== undefined && nextItem === undefined):
+                        return desc ? -1 : 1
+                    case (curItem === undefined && nextItem !== undefined):
+                        return desc ? 1 : -1
+                }
+
+                return sortString(curItem[typeOrName(curItem)], nextItem[typeOrName(nextItem)], desc)
+            })
+        })
+    } else if (sortByColumn === "stock") {
+        allData.forEach(data => data.sort((a, b) => sortNumber(a[sortByColumn], b[sortByColumn], desc)))
+    } else if (sortByColumn === "location") {
+
+        allData.forEach(data => data.sort((a, b) => {
+            const curLoc = a[sortByColumn].split(", ")
+            const nextLoc = b[sortByColumn].split(", ")
+            let [curLocX, curLocY, curLocZ] = curLoc
+            let [nextLocX, nextLocY, nextLocZ] = nextLoc
+
+            curLocX = curLocX*1
+            curLocY = curLocY*1
+            curLocZ = curLocZ*1
+
+            nextLocX = nextLocX*1
+            nextLocY = nextLocY*1
+            nextLocZ = nextLocZ*1
+
+            if (curLocX !== nextLocX) {
+                return sortNumber(curLocX, nextLocX, desc)
+            }
+
+            if (curLocY !== nextLocY) {
+                return sortNumber(curLocY, nextLocY, desc)
+            }
+
+            if (curLocZ !== nextLocZ) {
+                return sortNumber(curLocZ, nextLocZ, desc)
+            }
+
+
+        }))
+    }
+
+    clusterize.update(convertData(dataDisplaying))
+
+}
+
+function sortString(a, b, desc) {
+    return desc ? -(a.localeCompare(b)) : a.localeCompare(b)
+}
+
+function sortNumber(a, b, desc) {
+    const swap = b * 1 - a * 1 >= 0 ? -1 : 1
+    return desc ? -swap : swap
+}
+
+window.addEventListener("load", () => writeData())

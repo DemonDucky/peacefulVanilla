@@ -20,14 +20,18 @@
 
 .clusterize thead td {
     width: fit-content;
-    padding: 8px 4px;
-    text-align: center;
+    padding: 8px 6px;
     font-weight: bold;
 }
 
 .clusterize tbody tr td {
-    padding: 8px 4px;
+    padding: 8px 6px;
 }
+
+.arrow {
+    margin-left: 4px;
+}
+
 
 @media screen and (max-width: 600px) {
 
