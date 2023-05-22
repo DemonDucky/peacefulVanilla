@@ -1,5 +1,6 @@
 const searchValue = document.querySelector("#search")
 const headers = document.querySelectorAll(".clusterize thead td")
+const textBox = document.querySelector(".meta-data")
 const arrowDown = "<i id=\"down\" class=\"arrow\"><box-icon size='xs' type='solid' name='down-arrow'></box-icon></i>"
 const arrowUp = "<i id=\"up\" class=\"arrow\"><box-icon size='xs' type='solid' name='up-arrow'></box-icon></i>"
 let rawLink = ""
@@ -57,6 +58,7 @@ function flattenData(shopkeepers) {
     return result
 }
 
+
 function convertData(tradings) {
 
     const result = []
@@ -71,15 +73,19 @@ function convertData(tradings) {
             .replace("%{y}", locationSplited[1])
             .replace("%{z}", locationSplited[2])
 
+
+        //     <td>${resultItem.name || `${resultItem.amount}x ${resultItem.type.replaceAll("_", " ")}`}</td>
+        // <td>${item1.name || `${item1.amount}x ${item1.type.replaceAll("_", " ")}`}</td>
+        // <td>${item2 ? item2.name || `${item2.amount}x ${item2.type.replaceAll("_", " ")}` : ""}</td>
         result.push(`
     <tr>
         <td>${shopName}</td>
         <td>${shopOwner}</td>
         <td><a href="${link}">${location}</a></td>
         <td>${world}</td>
-        <td>${resultItem.name || `${resultItem.amount}x ${resultItem.type.replaceAll("_", " ")}`}</td>
-        <td>${item1.name || `${item1.amount}x ${item1.type.replaceAll("_", " ")}`}</td>
-        <td>${item2 ? item2.name || `${item2.amount}x ${item2.type.replaceAll("_", " ")}` : ""}</td>
+        <td>${resultItem.type.replaceAll("_", " ")}</td>
+        <td>${item1.type.replaceAll("_", " ")}</td>
+        <td>${item2 ? item2.type.replaceAll("_", " ") : ""}</td>
         <td>${stock}</td>
     </tr>`)
     })
@@ -123,12 +129,13 @@ function filterData() {
 
 function typeOrName(item) {
 
-    if (!item) return null
+    return "type"
+    // if (!item) return null
+    //
+    // let typeOrName = "type"
+    // if (item.name !== "") typeOrName = "name"
 
-    let typeOrName = "type"
-    if (item.name !== "") typeOrName = "name"
-
-    return typeOrName
+    // return typeOrName
 }
 
 function sortEvent() {

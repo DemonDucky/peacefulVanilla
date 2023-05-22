@@ -32,6 +32,13 @@
     margin-left: 4px;
 }
 
+.meta-data {
+    position: absolute;
+    display: none;
+    background: black;
+    padding: 8px;
+}
+
 
 @media screen and (max-width: 600px) {
 
