@@ -135,7 +135,7 @@ function getMetaData(item) {
     const resultItemLore = item.lore ? item.lore.join("<br>").replace(/§./g, "") : ""
     const itemEnchant = []
 
-    if (Object.keys(item.enchant).length !== 0) {
+    if (item.enchant && Object.keys(item.enchant).length !== 0) {
         for (const [key, value] of Object.entries(item.enchant)) {
             itemEnchant.push(`- ${key.replaceAll("minecraft:", "").replace("_", " ")}: ${value}`)
         }
