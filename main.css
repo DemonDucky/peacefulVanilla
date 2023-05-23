@@ -2,52 +2,135 @@
     box-sizing: border-box;
 }
 
+.clusterize {
+    display: flex;
+    flex-direction: column;
+    padding: 24px 40px;
+    background: rgb(196, 211, 246);
+    width: 100vw;
+    height: 100vh;
+}
+
+.clusterize .info {
+    align-self: center;
+    margin-bottom: 12px;
+}
+
+.clusterize #search {
+    padding: 10px;
+    width: 400px;
+    border-radius: 20px;
+    border: 1px #4b8482 solid;
+}
+
+.clusterize #timeDumped {
+    align-self: end;
+    margin: 0 6px 8px;
+}
+
+
 
 .clusterize-scroll {
-    max-height: 100vh;
+    border-radius: 12px;
+    max-height: 100%;
+    width: 100%;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.clusterize-scroll::-webkit-scrollbar {
+    display: none;
 }
 
 .clusterize table {
     table-layout: fixed;
-    width: 1800px;
+    width: 100%;
     border-spacing: 0;
     border-collapse: collapse;
 }
 
-.clusterize table td {
-    border: 1px black solid;
-}
-
 .clusterize thead td {
     width: fit-content;
-    padding: 8px 6px;
+    background: rgb(108, 122, 224);
+    color: rgb(244, 244, 253);
+    cursor: pointer;
+    padding: 16px 12px;
     font-weight: bold;
 }
 
+.clusterize tbody td {
+    background: rgb(255, 255, 255);
+}
+
 .clusterize tbody tr td {
-    padding: 8px 6px;
+    padding: 16px 12px;
+}
+
+.clusterize tbody tr {
+    border-bottom: 1px #e8dede solid;
+}
+
+.clusterize tbody a {
+    text-decoration: none;
+    color: #068488;
+}
+
+.clusterize tbody a:hover {
+    color: #324b4c;
+}
+
+.clusterize h6 {
+    font-weight: normal;
 }
 
 .arrow {
-    margin-left: 4px;
+    margin-left: 8px;
 }
 
 .meta-data {
     position: absolute;
     display: none;
-    background: black;
+    background: rgba(36, 37, 41, 0.85);
+    border-radius: 4px;
     color: white;
-    padding: 8px;
+    padding: 12px;
 }
 
+.search-wrapper {
+    position: relative;
+}
 
-@media screen and (max-width: 600px) {
+.search-wrapper input {
+    box-shadow: #8c8a88 0 4px 8px -2px;
+}
 
-    .table {
-        width: 2000px
+.search-wrapper select {
+    position: absolute;
+    background: none;
+    padding: 4px 8px;
+    border: none;
+    text-align: end;
+    right: 4%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+@media screen and (max-width: 768px) {
+
+    .clusterize table {
+        table-layout: fixed;
+        width: 2000px;
+        border-spacing: 0;
+        border-collapse: collapse;
     }
 
-    .
+    .clusterize {
+        padding: 12px 12px;
+    }
+
+    .clusterize #search {
+        width: calc(100vw - 20px);
+    }
 
 
 }

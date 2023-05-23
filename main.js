@@ -1,8 +1,8 @@
 const searchValue = document.querySelector("#search")
 const headers = document.querySelectorAll(".clusterize thead td")
 const textBox = document.querySelector(".meta-data")
-const arrowDown = "<i id=\"down\" class=\"arrow\"><box-icon size='xs' type='solid' name='down-arrow'></box-icon></i>"
-const arrowUp = "<i id=\"up\" class=\"arrow\"><box-icon size='xs' type='solid' name='up-arrow'></box-icon></i>"
+const arrowDown = "<i id=\"down\" class=\"arrow\"><box-icon size='xs' color='white' type='solid' name='down-arrow'></box-icon></i>"
+const arrowUp = "<i id=\"up\" class=\"arrow\"><box-icon size='xs' color='white' type='solid' name='up-arrow'></box-icon></i>"
 let rawLink = ""
 let clusterize = null
 let flattenedData = []
@@ -51,7 +51,7 @@ async function writeData() {
         textBox.style.display = "none"
     }
 
-    document.getElementById("contentArea").onmousemove = function(e) {
+    document.getElementById("contentArea").onmousemove = function (e) {
         const target = e.target
         if (target.nodeName !== 'TD' || target.dataset.hoverable !== "true") return
         const mouseX = e.pageX + 10;
@@ -59,6 +59,10 @@ async function writeData() {
         textBox.style.left = mouseX + 'px';
         textBox.style.top = mouseY + 'px';
     }
+
+    let time = data.information.timeDumped
+    time = time.split("T")
+    document.querySelector("#timeDumped").innerHTML = `Last Update: ${time[0]} (${time[1].split(".")[0]})`
 }
 
 function flattenData(shopkeepers) {
@@ -138,8 +142,7 @@ function getMetaData(item) {
     }
 
     return {
-        lore: resultItemLore,
-        enchant: itemEnchant.join("<br>")
+        lore: resultItemLore, enchant: itemEnchant.join("<br>")
     }
 }
 
@@ -164,7 +167,7 @@ function filterData() {
         return flattenedData
     }
 
-    const searchFilter = document.querySelector('#search_filter input:checked')
+    const searchFilter = document.querySelector('#searchBy')
 
 
     return flattenedData.filter(trading => {
@@ -298,3 +301,4 @@ function sortNumber(a, b, desc) {
 }
 
 window.addEventListener("load", () => writeData())
+
