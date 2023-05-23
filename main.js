@@ -95,7 +95,7 @@ function flattenData(shopkeepers) {
 
 function convertData(tradings) {
 
-    const result = []
+    const result = ['<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>']
 
     tradings.forEach(trading => {
         const {shopName, shopOwner, location, world, resultItem, item1, item2, stock} = trading
@@ -300,5 +300,28 @@ function sortNumber(a, b, desc) {
     return desc ? -swap : swap
 }
 
-window.addEventListener("load", () => writeData())
+window.addEventListener("load", () => {
+
+    const header = document.querySelector(".clusterize thead tr")
+
+    header.style.width = `${document.querySelector(".clusterize thead").offsetWidth}px`
+
+    const scrollArea = document.querySelector(".clusterize .clusterize-scroll")
+
+    window.onresize = function () {
+        header.style.width = `${document.querySelector(".clusterize thead").offsetWidth}px`
+        header.style.marginLeft = window.innerWidth > 1200 ? "40px" : scrollArea.scrollLeft
+
+    }
+
+    scrollArea.onscroll = function () {
+        if (window.innerWidth > 1200) {
+            header.style.marginLeft = "40px"
+        } else {
+            header.style.marginLeft = `-${this.scrollLeft}px`
+        }
+    }
+
+    writeData()
+})
 

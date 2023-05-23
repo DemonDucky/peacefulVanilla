@@ -2,11 +2,18 @@
     box-sizing: border-box;
 }
 
+:root {
+    --background-color: #e8ab81;
+    --header-background-color: #fd8c3e;
+    --header-text-color: rgb(244, 244, 253);
+    --table-background-color: rgb(255, 255, 255);
+}
+
 .clusterize {
     display: flex;
     flex-direction: column;
     padding: 24px 40px;
-    background: rgb(196, 211, 246);
+    background: var(--background-color);
     width: 100vw;
     height: 100vh;
 }
@@ -31,7 +38,7 @@
 
 
 .clusterize-scroll {
-    border-radius: 12px;
+    border-radius: 16px;
     max-height: 100%;
     width: 100%;
     -ms-overflow-style: none;  /* IE and Edge */
@@ -49,17 +56,28 @@
     border-collapse: collapse;
 }
 
+.clusterize thead tr {
+    left: 0;
+    position: fixed;
+    display: table;
+    table-layout: fixed;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+    width: 1275.63px;
+    margin: 0 40px;
+}
+
 .clusterize thead td {
     width: fit-content;
-    background: rgb(108, 122, 224);
-    color: rgb(244, 244, 253);
+    background: var(--header-background-color);
+    color: var(--header-text-color);
     cursor: pointer;
     padding: 16px 12px;
     font-weight: bold;
 }
 
 .clusterize tbody td {
-    background: rgb(255, 255, 255);
+    background: var(--table-background-color);
 }
 
 .clusterize tbody tr td {
@@ -101,7 +119,7 @@
 }
 
 .search-wrapper input {
-    box-shadow: #8c8a88 0 4px 8px -2px;
+    box-shadow: #946e6e 0 4px 8px -2px;
 }
 
 .search-wrapper select {
@@ -115,6 +133,14 @@
     transform: translateY(-50%);
 }
 
+/*.clusterize thead tr td:first-child {*/
+/*    border-radius: 12px 0 0 0;*/
+/*}*/
+
+/*.clusterize thead tr td:last-child {*/
+/*    border-radius: 0 12px 0 0;*/
+/*}*/
+
 @media screen and (max-width: 1200px) {
 
     .clusterize table {
@@ -125,12 +151,24 @@
     }
 
     .clusterize {
-        padding: 12px 12px;
+        padding: 20px 0;
     }
+
+    .clusterize thead tr {
+        margin: 0;
+    }
+
+    .test123 {
+        width: 200px;
+
+    }
+
+}
+
+@media screen and (max-width: 768px) {
 
     .clusterize #search {
         width: calc(100vw - 20px);
     }
-
 
 }
