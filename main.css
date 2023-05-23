@@ -115,7 +115,7 @@
     transform: translateY(-50%);
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1200px) {
 
     .clusterize table {
         table-layout: fixed;
