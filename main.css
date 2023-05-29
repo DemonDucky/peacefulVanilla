@@ -2,11 +2,18 @@
     box-sizing: border-box;
 }
 
+body {
+    font-size: 16px;
+}
+
 :root {
     --background-color: #e8ab81;
     --header-background-color: #fd8c3e;
     --header-text-color: rgb(244, 244, 253);
     --table-background-color: rgb(255, 255, 255);
+    --sponsor-border-color: #e8ab81;
+    --sponsor-background-color: rgb(255, 244, 220);
+    --sponsor-text-color: #da0101;
 }
 
 .clusterize {
@@ -59,6 +66,7 @@
 .clusterize thead tr {
     left: 0;
     position: fixed;
+    z-index: 1000;
     display: table;
     table-layout: fixed;
     border-radius: 16px 16px 0 0;
@@ -101,12 +109,13 @@
     font-weight: normal;
 }
 
-.arrow {
+.arrow, .arrow-default {
     margin-left: 8px;
 }
 
 .meta-data {
     position: absolute;
+    z-index: 999;
     display: none;
     background: rgba(36, 37, 41, 0.85);
     border-radius: 4px;
@@ -133,6 +142,40 @@
     transform: translateY(-50%);
 }
 
+.clusterize tbody tr.sponsor {
+    position: relative;
+    color: var(--sponsor-text-color);
+
+}
+
+.clusterize tbody tr.sponsor td{
+    background-color: var(--sponsor-background-color);
+    border-top: var(--sponsor-border-color) 1px solid;
+    border-bottom: var(--sponsor-border-color) 1px solid;
+}
+
+.clusterize tbody tr td.test {
+    position: relative;
+}
+
+.clusterize tbody tr td.test::after {
+    content: "FEATURED";
+    color: white;
+    font-weight: bold;
+    background-color: var(--header-background-color);
+    padding: 4px 6px;
+    position: absolute;
+    font-size: 12px;
+    top: 0;
+    left: 0;
+}
+
+/*.clusterize tbody tr.sponsor::after {*/
+/*    content: "hello world";*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*}*/
+
 /*.clusterize thead tr td:first-child {*/
 /*    border-radius: 12px 0 0 0;*/
 /*}*/
@@ -158,10 +201,6 @@
         margin: 0;
     }
 
-    .test123 {
-        width: 200px;
-
-    }
 
 }
 

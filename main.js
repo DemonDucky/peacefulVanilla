@@ -2,11 +2,13 @@ const searchValue = document.querySelector("#search")
 const headers = document.querySelectorAll(".clusterize thead td")
 const textBox = document.querySelector(".meta-data")
 const arrowDown = "<i id=\"down\" class=\"arrow\"><box-icon size='xs' color='white' type='solid' name='down-arrow'></box-icon></i>"
+const defaultArrow = "<i id=\"down\" class=\"arrow-default\"><box-icon size='xs' color='white' name='expand-vertical'></box-icon></i>"
 const arrowUp = "<i id=\"up\" class=\"arrow\"><box-icon size='xs' color='white' type='solid' name='up-arrow'></box-icon></i>"
 let rawLink = ""
 let clusterize = null
 let flattenedData = []
 let dataDisplaying = []
+let sponsorsData = []
 
 async function getData() {
 
@@ -17,9 +19,18 @@ async function getData() {
 
 async function writeData() {
 
+    headers.forEach(header => {
+        header.innerHTML += defaultArrow
+    })
+
     const data = await getData()
     flattenedData = flattenData(data.data)
+    shuffleArray(flattenedData)
     dataDisplaying = [...flattenedData]
+
+    sponsorsData = flattenedData.filter((value) => {
+        if (value.expiredDate && Date.now() < value.expiredDate) return true
+    })
 
     rawLink = data.information.link
 
@@ -27,25 +38,33 @@ async function writeData() {
         rows: convertData(dataDisplaying), scrollId: 'scrollArea', contentId: 'contentArea'
     });
 
-    addEvent(flattenedData, clusterize)
+    addEvent()
     sortEvent()
 
 
     document.getElementById('contentArea').onmouseover = function (e) {
         const target = e.target
-        if (target.nodeName !== 'TD' || target.dataset.hoverable !== "true") return
+        if (target.nodeName !== 'TD') return
         const name = target.dataset.name
         const lore = target.dataset.lore
         const enchants = target.dataset.enchants
-        if (name === "" && lore === "" && enchants === "") return
-        textBox.innerHTML = ""
-        textBox.style.display = "block"
-        textBox.innerHTML = `Name: ${name}<br><br>Lore:<br>${lore}<br><br>Enchants:<br>${enchants}`
+        if (target.dataset.hoverable === "true") {
+            if (name !== "" || lore !== "" || enchants !== "") {
+                textBox.style.display = "block"
+                textBox.innerHTML = `Name: ${name}<br><br>Lore:<br>${lore}<br><br>Enchants:<br>${enchants}`
+            }
+        }
+
+        if (target.closest("tr").dataset.hoverable === "true" && (name === undefined || name === "") && (lore === undefined || lore === "") && (enchants === undefined || enchants === "")) {
+            const message = target.closest("tr").dataset.message
+            textBox.style.display = "block"
+            textBox.innerHTML = message === "" ? "[no message]" : message
+        }
     }
 
     document.getElementById("contentArea").onmouseout = function (e) {
         const target = e.target
-        if (target.nodeName !== 'TD' || target.dataset.hoverable !== "true") return
+        if (target.nodeName !== 'TD' || (target.dataset.hoverable !== "true" && target.parentElement.dataset.hoverable !== "true")) return
 
 
         textBox.style.display = "none"
@@ -53,7 +72,7 @@ async function writeData() {
 
     document.getElementById("contentArea").onmousemove = function (e) {
         const target = e.target
-        if (target.nodeName !== 'TD' || target.dataset.hoverable !== "true") return
+        if (target.nodeName !== 'TD') return
         const mouseX = e.pageX + 10;
         const mouseY = e.pageY + 10;
         textBox.style.left = mouseX + 'px';
@@ -64,6 +83,30 @@ async function writeData() {
     time = time.split("T")
     document.querySelector("#timeDumped").innerHTML = `Last Update: ${time[0]} (${time[1].split(".")[0]})`
 }
+
+function addRandomSponsor(tradings) {
+
+    shuffleArray(sponsorsData).forEach((value, index) => {
+        const random = Math.floor(Math.random() * 51 + index * 50)
+        if (tradings.length >= random) {
+            tradings.splice(Math.floor(Math.random() * 51 + index * 50), 0, value)
+        }
+    })
+}
+
+function removeAllSponsors(tradings) {
+    return tradings.filter(value => !value.expiredDate)
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+
+    return array
+}
+
 
 function flattenData(shopkeepers) {
 
@@ -76,6 +119,8 @@ function flattenData(shopkeepers) {
         shopkeeper.recipes.forEach(trade => {
 
             result.push({
+                message: trade.message !== null ? trade.message : null,
+                expiredDate: trade.expiredDate ? Date.parse(trade.expiredDate) : null,
                 shopName: shopkeeper.shopName,
                 shopOwner: shopkeeper.shopOwner,
                 location: shopkeeper.location,
@@ -97,8 +142,11 @@ function convertData(tradings) {
 
     const result = ['<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>']
 
-    tradings.forEach(trading => {
-        const {shopName, shopOwner, location, world, resultItem, item1, item2, stock} = trading
+    const modifiedTradings = removeAllSponsors(tradings)
+    addRandomSponsor(modifiedTradings)
+
+    modifiedTradings.forEach(trading => {
+        const {message, expiredDate, shopName, shopOwner, location, world, resultItem, item1, item2, stock} = trading
         const locationSplited = location.split(", ")
 
         const link = rawLink
@@ -113,13 +161,13 @@ function convertData(tradings) {
 
 
         result.push(`
-    <tr>
-        <td>${shopName}</td>
+    <tr data-message="${message}" data-hoverable="${(!!expiredDate)}" class="${expiredDate ? "sponsor" : null}">
+        <td class="${expiredDate ? "test" : null}">${shopName}</td>
         <td>${shopOwner}</td>
-        <td><a href="${link}">${location}</a></td>
+        <td><a href="${link}" target="_blank">${location}</a></td>
         <td>${world}</td>
-        <td data-hoverable="true" data-enchants="${resultItemMeta.enchant}" data-lore="${resultItemMeta.lore}" data-name="${resultItem.name}">${resultItem.amount}x ${resultItem.type.replaceAll("_", " ")}</td>
-        <td data-hoverable="true" data-enchants="${item1Meta.enchant}" data-lore="${item1Meta.lore}" data-name="${item1.name}">${resultItem.amount}x ${item1.type.replaceAll("_", " ")}</td>
+        <td data-hoverable="true" data-enchants="${resultItemMeta.enchant}" data-lore="${resultItemMeta.lore}" data-name="${resultItem.name ?? ""}">${resultItem.amount}x ${resultItem.type.replaceAll("_", " ")}</td>
+        <td data-hoverable="true" data-enchants="${item1Meta.enchant}" data-lore="${item1Meta.lore}" data-name="${item1.name ?? ""}">${resultItem.amount}x ${item1.type.replaceAll("_", " ")}</td>
         <td data-hoverable="true" data-enchants="${item2Meta.enchant}" data-lore="${item2Meta.lore}" data-name="${item2 ? item2.name : ""}">${item2 ? `${resultItem.amount}x ${item2.type.replaceAll("_", " ")}` : ""}</td>
         <td>${stock}</td>
     </tr>`)
@@ -164,7 +212,7 @@ function filterData() {
     const value = searchValue.value
 
     if (value === "") {
-        return flattenedData
+        return shuffleArray(flattenedData)
     }
 
     const searchFilter = document.querySelector('#searchBy')
@@ -200,9 +248,14 @@ function sortEvent() {
 
 function addIcon(header) {
 
+    const defaultArrow = document.querySelectorAll(".arrow-default")
+    if (defaultArrow) {
+        defaultArrow.forEach(value => value.remove())
+    }
+
     headers.forEach(headerAgain => {
         const arrow = headerAgain.querySelector(".arrow")
-        if (arrow && (headerAgain !== header)) {
+        if (arrow && headerAgain !== header) {
             headerAgain.removeChild(arrow)
         }
     })
@@ -302,26 +355,25 @@ function sortNumber(a, b, desc) {
 
 window.addEventListener("load", () => {
 
-    const header = document.querySelector(".clusterize thead tr")
-
-    header.style.width = `${document.querySelector(".clusterize thead").offsetWidth}px`
-
-    const scrollArea = document.querySelector(".clusterize .clusterize-scroll")
-
-    window.onresize = function () {
-        header.style.width = `${document.querySelector(".clusterize thead").offsetWidth}px`
-        header.style.marginLeft = window.innerWidth > 1200 ? "40px" : scrollArea.scrollLeft
-
-    }
-
-    scrollArea.onscroll = function () {
-        if (window.innerWidth > 1200) {
-            header.style.marginLeft = "40px"
-        } else {
-            header.style.marginLeft = `-${this.scrollLeft}px`
-        }
-    }
-
     writeData()
 })
 
+const header = document.querySelector(".clusterize thead tr")
+
+header.style.width = `${document.querySelector(".clusterize thead").offsetWidth}px`
+
+const scrollArea = document.querySelector(".clusterize .clusterize-scroll")
+
+window.onresize = function () {
+    header.style.width = `${document.querySelector(".clusterize thead").offsetWidth}px`
+    header.style.marginLeft = window.innerWidth > 1200 ? "40px" : scrollArea.scrollLeft
+
+}
+
+scrollArea.onscroll = function () {
+    if (window.innerWidth > 1200) {
+        header.style.marginLeft = "40px"
+    } else {
+        header.style.marginLeft = `-${this.scrollLeft}px`
+    }
+}
